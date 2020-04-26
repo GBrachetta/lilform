@@ -1,4 +1,17 @@
 {% extends 'layout.html' %}
 {% block content %}
-<h1>BUILDERS</h1>
+{% for builder in builders %}
+
+
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <a class="mr-2" href="#">{{ builder.contributor }}</a>
+      <small class="text-muted">{{ builder.date_added }}</small>
+    </div>
+    <h2><a class="article-title" href="#">{{ builder.name }}</a></h2>
+    <p class="article-content">{{ builder.biography }}</p>
+  </div>
+</article>
+{% endfor %}
 {% endblock content %}
