@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% for instrument in instruments %}
+
+
+<article class="media content-section">
+  <div class="media-body">
+    <div class="article-metadata">
+      <a class="mr-2" href="#">{{ instrument.contributor }}</a>
+      <small class="text-muted">Fecha agregado</small>
+    </div>
+    <h2><a class="article-title" href="#">{{ instrument.instrument_maker }}</a></h2>
+    <p class="article-content">{{ instrument.location }}</p>
+  </div>
+</article>
+{% endfor %}
+{% endblock content %}
