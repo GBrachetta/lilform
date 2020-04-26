@@ -7,10 +7,11 @@
   <div class="media-body">
     <div class="article-metadata">
       <a class="mr-2" href="#">{{ instrument.contributor }}</a>
-      <small class="text-muted">Fecha agregado</small>
+      <small class="text-muted">{{ instrument.date_added }}</small>
     </div>
     <h2><a class="article-title" href="#">{{ instrument.instrument_maker }}</a></h2>
-    <p class="article-content">{{ instrument.location }}</p>
+    <p class="article-content">{{ instrument.description }}</p>
+    <p class="article-content text-muted">{{ instrument.location }}</p>
   </div>
 </article>
 {% endfor %}
