@@ -5,7 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from forms import RegistrationForm, LoginForm
 
 app = Flask(__name__)
-mode = 'dev'
+mode = 'prod'
 
 if mode == 'dev':
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
