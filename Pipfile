@@ -15,6 +15,7 @@ python-dotenv = "*"
 email-validator = "*"
 gunicorn = "*"
 flask-bcrypt = "*"
+flask-login = "*"
 
 [requires]
 python_version = "3.7"
