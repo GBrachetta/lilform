@@ -16,6 +16,7 @@ email-validator = "*"
 gunicorn = "*"
 flask-bcrypt = "*"
 flask-login = "*"
+pillow = "*"
 
 [requires]
 python_version = "3.7"
