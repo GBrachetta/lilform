@@ -5,9 +5,18 @@ from flask_sqlalchemy import SQLAlchemy
 from forms import RegistrationForm, LoginForm
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'SQLALCHEMY_DATABASE_URI')
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+mode = 'dev'
+
+if mode == 'dev':
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+        'SQLALCHEMY_DATABASE_URI')
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+else:
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
+        'DATABASE_URL')
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+
+
 db = SQLAlchemy(app)
 
 

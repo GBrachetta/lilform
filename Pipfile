@@ -13,6 +13,7 @@ flask-wtf = "*"
 psycopg2-binary = "*"
 python-dotenv = "*"
 email-validator = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.7"
