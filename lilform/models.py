@@ -6,7 +6,9 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(80), unique=True, nullable=False)
-
+    password = db.Column(db.String(60), nullable=False)
+    image_file = db.Column(db.String(20), nullable=False,
+                           default='default.jpg')
     added_builder = db.relationship(
         'Builder', backref='contributor', lazy=True)
     added_instrument = db.relationship(
