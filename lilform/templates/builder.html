@@ -1,6 +1,5 @@
 {% extends 'layout.html' %}
 {% block content %}
-{% for builder in builders %}
 
 
 <article class="media content-section">
@@ -10,9 +9,8 @@
             <a class="mr-2" href="#">{{ builder.contributor.username }}</a>
             <small class="text-muted">{{ builder.date_added.strftime('%Y-%m-%d') }}</small>
         </div>
-        <h2><a class="article-title" href="{{ url_for('builder', builder_id=builder.id) }}">{{ builder.name }}</a></h2>
+        <h2 class="article-title">{{ builder.name }}</h2>
         <p class="article-content">{{ builder.biography }}</p>
     </div>
 </article>
-{% endfor %}
 {% endblock content %}

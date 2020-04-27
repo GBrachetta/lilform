@@ -3,7 +3,7 @@ import secrets
 from PIL import Image
 from flask import render_template, url_for, flash, redirect, request
 from lilform import app, db, bcrypt
-from lilform.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from lilform.forms import RegistrationForm, LoginForm, UpdateAccountForm, BuilderForm
 from lilform.models import User, Builder, Instrument
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -29,27 +29,6 @@ instruments = [
         'location': 'Paris',
         'date_added': '2 April 2019',
         'description': 'Pellentesque placerat elit eget mi porttitor pretium. In imperdiet molestie massa, at pretium lorem tincidunt non. In volutpat sed eros ut congue. Donec pellentesque mauris est, quis mattis erat molestie non. Curabitur nisi augue, malesuada eget pulvinar eget, faucibus sed nisi. Integer euismod eleifend nisl, at hendrerit leo gravida sit amet. Nam laoreet blandit sapien vitae vehicula. Nullam rhoncus, lacus non tincidunt efficitur, libero purus vulputate odio, non volutpat tellus lacus at odio.'
-    }
-]
-
-builders = [
-    {
-        'contributor': 'Guillermo Brachetta',
-        'name': 'Guillaume Vaudry',
-        'date_added': '24 April 1643',
-        'biography': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam congue mi eget risus elementum malesuada. Donec ut erat a libero molestie gravida. Sed eu tempor ex. Vivamus iaculis lorem sed pretium ultrices. Mauris malesuada velit sit amet quam feugiat, vitae posuere urna condimentum. Proin lacinia eros augue, a euismod lorem finibus et. Duis ullamcorper tellus mauris, sit amet consequat neque efficitur vel. Donec euismod mauris leo, varius pharetra nunc consectetur sed. Donec ultricies lorem dui, et posuere lorem vehicula id. Aliquam erat urna, imperdiet molestie arcu at, tincidunt porttitor enim. Mauris scelerisque finibus magna, vel scelerisque neque pharetra sed. Suspendisse pretium dui ut risus ornare, at faucibus lacus efficitur. In eleifend nibh sed turpis consectetur condimentum.'
-    },
-    {
-        'contributor': 'Guillermo Brachetta',
-        'name': 'Etiénne Lefebvre',
-        'date_added': '2 December 1664',
-        'biography': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam congue mi eget risus elementum malesuada. Donec ut erat a libero molestie gravida. Sed eu tempor ex. Vivamus iaculis lorem sed pretium ultrices. Mauris malesuada velit sit amet quam feugiat, vitae posuere urna condimentum. Proin lacinia eros augue, a euismod lorem finibus et. Duis ullamcorper tellus mauris, sit amet consequat neque efficitur vel. Donec euismod mauris leo, varius pharetra nunc consectetur sed. Donec ultricies lorem dui, et posuere lorem vehicula id. Aliquam erat urna, imperdiet molestie arcu at, tincidunt porttitor enim. Mauris scelerisque finibus magna, vel scelerisque neque pharetra sed. Suspendisse pretium dui ut risus ornare, at faucibus lacus efficitur. In eleifend nibh sed turpis consectetur condimentum.'
-    },
-    {
-        'contributor': 'Guillermo Brachetta',
-        'name': 'Hans Ruckers',
-        'date_added': '24 June 1572',
-        'biography': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam congue mi eget risus elementum malesuada. Donec ut erat a libero molestie gravida. Sed eu tempor ex. Vivamus iaculis lorem sed pretium ultrices. Mauris malesuada velit sit amet quam feugiat, vitae posuere urna condimentum. Proin lacinia eros augue, a euismod lorem finibus et. Duis ullamcorper tellus mauris, sit amet consequat neque efficitur vel. Donec euismod mauris leo, varius pharetra nunc consectetur sed. Donec ultricies lorem dui, et posuere lorem vehicula id. Aliquam erat urna, imperdiet molestie arcu at, tincidunt porttitor enim. Mauris scelerisque finibus magna, vel scelerisque neque pharetra sed. Suspendisse pretium dui ut risus ornare, at faucibus lacus efficitur. In eleifend nibh sed turpis consectetur condimentum.'
     }
 ]
 
@@ -159,8 +138,28 @@ def account():
     return render_template('account.html', title='Account', image_file=image_file, form=form)
 
 
+@app.route('/builder/new', methods=['POST', 'GET'])
+def new_builder():
+    form = BuilderForm()
+    if form.validate_on_submit():
+        builder = Builder(
+            name=form.name.data, biography=form.biography.data, contributor=current_user)
+        db.session.add(builder)
+        db.session.commit()
+        flash('You created a new record', 'success')
+        return redirect(url_for('allBuilders'))
+    return render_template('create_builder.html', title='New Builder', form=form)
+
+
+@app.route('/builder/<int:builder_id>')
+def builder(builder_id):
+    builder = Builder.query.get_or_404(builder_id)
+    return render_template('builder.html', title=builder.name, builder=builder)
+
+
 @app.route('/builders')
-def builder():
+def allBuilders():
+    builders = Builder.query.all()
     return render_template('builders.html', builders=builders, title='Builders')
 
 

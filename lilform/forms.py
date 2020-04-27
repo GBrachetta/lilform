@@ -1,9 +1,9 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from flask_login import current_user
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from lilform.models import User
+from lilform.models import User, Builder
 
 
 class RegistrationForm(FlaskForm):
@@ -54,3 +54,15 @@ class UpdateAccountForm(FlaskForm):
             user = User.query.filter_by(email=email.data).first()
             if user:
                 raise ValidationError('The email already exists.')
+
+
+class BuilderForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    biography = TextAreaField('Biography', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+    def validate_name(self, name):
+        if name.data != self.name:
+            builder = Builder.query.filter_by(name=name.data).first()
+            if builder:
+                raise ValidationError('This builder already exists.')
