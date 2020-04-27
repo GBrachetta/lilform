@@ -60,9 +60,3 @@ class BuilderForm(FlaskForm):
     name = StringField('Name', validators=[DataRequired()])
     biography = TextAreaField('Biography', validators=[DataRequired()])
     submit = SubmitField('Submit')
-
-    def validate_name(self, name):
-        if name.data != self.name:
-            builder = Builder.query.filter_by(name=name.data).first()
-            if builder:
-                raise ValidationError('This builder already exists.')

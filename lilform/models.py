@@ -23,7 +23,7 @@ class User(db.Model, UserMixin):
 
 class Builder(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(60), unique=True, nullable=False)
+    name = db.Column(db.String(60), nullable=False)
     biography = db.Column(db.Text, nullable=False)
     date_added = db.Column(db.DateTime, nullable=False,
                            default=datetime.utcnow)

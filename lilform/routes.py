@@ -1,7 +1,7 @@
 import os
 import secrets
 from PIL import Image
-from flask import render_template, url_for, flash, redirect, request
+from flask import render_template, url_for, flash, redirect, request, abort
 from lilform import app, db, bcrypt
 from lilform.forms import RegistrationForm, LoginForm, UpdateAccountForm, BuilderForm
 from lilform.models import User, Builder, Instrument
@@ -56,7 +56,7 @@ def register():
                     email=form.email.data, password=hashed_password)
         db.session.add(user)
         db.session.commit()
-        flash('Account created. You can now log in', 'success')
+        flash('Account created. You can now log in', 'info')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
@@ -128,7 +128,7 @@ def account():
             current_user.email = form.email.data
             current_user.username = form.username.data
             db.session.commit()
-            flash('Your email and password have been updated', 'success')
+            flash('Your email and password have been updated', 'info')
             return redirect(url_for('account'))
     elif request.method == 'GET':
         form.username.data = current_user.username
@@ -146,9 +146,9 @@ def new_builder():
             name=form.name.data, biography=form.biography.data, contributor=current_user)
         db.session.add(builder)
         db.session.commit()
-        flash('You created a new record', 'success')
-        return redirect(url_for('allBuilders'))
-    return render_template('create_builder.html', title='New Builder', form=form)
+        flash('You created a new record', 'info')
+        return redirect(url_for('all_builders'))
+    return render_template('create_builder.html', title='New Builder', form=form, legend='New Builder')
 
 
 @app.route('/builder/<int:builder_id>')
@@ -157,8 +157,43 @@ def builder(builder_id):
     return render_template('builder.html', title=builder.name, builder=builder)
 
 
+@app.route('/builder/<int:builder_id>/update', methods=['GET', 'POST'])
+@login_required
+def update_builder(builder_id):
+    builder = Builder.query.get_or_404(builder_id)
+    if builder.contributor != current_user:
+        abort(403)
+    form = BuilderForm()
+    if form.validate_on_submit():
+        if form.name.data == builder.name and form.biography.data == builder.biography:
+            flash('No updates have been performed', 'danger')
+            return redirect(url_for('builder', builder_id=builder.id))
+        else:
+            builder.name = form.name.data
+            builder.biography = form.biography.data
+            db.session.commit()
+            flash('Builder has been updated', 'info')
+            return redirect(url_for('builder', builder_id=builder.id))
+    elif request.method == 'GET':
+        form.name.data = builder.name
+        form.biography.data = builder.biography
+    return render_template('create_builder.html', title='Update Builder', form=form, legend='Update Builder')
+
+
+@app.route("/builder/<int:builder_id>/delete", methods=['POST'])
+@login_required
+def delete_builder(builder_id):
+    builder = Builder.query.get_or_404(builder_id)
+    if builder.contributor != current_user:
+        abort(403)
+    db.session.delete(builder)
+    db.session.commit()
+    flash('Your have deleted the record!', 'info')
+    return redirect(url_for('home'))
+
+
 @app.route('/builders')
-def allBuilders():
+def all_builders():
     builders = Builder.query.all()
     return render_template('builders.html', builders=builders, title='Builders')
 
